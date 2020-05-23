@@ -66,6 +66,8 @@ const styles = StyleSheet.create({
     labelTextLeft: {
         fontSize: 20,
         marginRight: 6,
+        width: 100,
+        textAlign: "center",
         color: "white",
         transform: [
             {rotate: "-90deg"}
@@ -74,6 +76,8 @@ const styles = StyleSheet.create({
     labelTextRight: {
         fontSize: 20,
         marginLeft: 6,
+        width: 100,
+        textAlign: "center",
         color: "white",
         transform: [
             {rotate: "90deg"}
