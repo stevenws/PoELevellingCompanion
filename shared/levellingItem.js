@@ -4,6 +4,7 @@ import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import { Progress } from "../data/progress.js";
 import FormattedText from "../shared/formattedText.js";
 import {globalStyles} from "../styles/global.js";
+import { WaypointLabel, RequiredLabel, OptionalLabel } from "../shared/verticalLabel.js";
 
 export default function LevellingItem({act, item, complete, pressHandler}) {
 
@@ -33,15 +34,11 @@ export default function LevellingItem({act, item, complete, pressHandler}) {
     return (
         <TouchableOpacity onPress={() => pressHandler(item.id)}>
             <View style={styles.container}>
-                <View style={[styles.label, item.hasWp ? styles.waypointLabelActive : styles.waypointLabelInactive]}>
-                    <Text style={styles.labelTextLeft}>Waypoint</Text>
-                </View>
+                <WaypointLabel active={item.hasWp} />
                 <View style={styles.centerBlock}>{ objectiveLine }</View>
                 {item.optional
-                    ? <Text></Text>
-                    : <View style={[styles.label, styles.requiredLabel]}>
-                        <Text style={styles.labelTextRight}>Required</Text>
-                    </View>
+                    ? <OptionalLabel secondaryText="text" />
+                    : <RequiredLabel />
                 }
             </View>
         </TouchableOpacity>
