@@ -1,5 +1,5 @@
 import React, {useContext} from 'react';
-import { StyleSheet, Text, View, FlatList} from 'react-native';
+import { StyleSheet, Text, View, ScrollView } from 'react-native';
 
 import { globalStyles } from "../styles/global.js";
 import LevellingItem from '../shared/levellingItem.js';
@@ -20,31 +20,27 @@ export default function Levelling() {
   }
 
   var container = [];
-  for (var i = 1; i < 11; i++) {
-    container.push(
-      <View style={globalStyles.section}>
-        <Text style={globalStyles.sectionText}>
-          {content.acts[i].title}
-        </Text>
-      </View>
-    );
+    for (var i = 1; i < 11; i++) {
+        container.push(
+            <View key={i}>
+                <View style={globalStyles.section}>
+                    <Text style={globalStyles.sectionText}>
+                        {content.acts[i].title}
+                    </Text>
+                </View>
 
-    container.push(
-      <FlatList
-        data={content.acts[i].tasks}
-        renderItem={({ item }) => (
-          <LevellingItem item={ item }
-                         pressHandler={ toggleState }/>
-        )}
-      />
-    );
-  }
+                {content.acts[i].tasks.map(item => (
+                    <LevellingItem item={ item }
+                                   key={ item.id }
+                                   pressHandler={ toggleState } />
+                ))}
+            </View>
+        );
+    }
 
   return (
-    <View style={globalStyles.header}>
-      <View>
+    <ScrollView contentContainerStyle={globalStyles.container}>
         {container}
-      </View>
-    </View>
+    </ScrollView>
   );
 }

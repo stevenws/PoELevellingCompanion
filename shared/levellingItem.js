@@ -7,7 +7,6 @@ import FormattedText from "../shared/formattedText.js";
 export default function LevellingItem({item, complete, pressHandler}) {
 
   const [progress, setProgress] = useContext(Progress);
-  console.log("Rendering: " + item.id);
 
   var objectiveStyle = [];
   var rewardStyle    = [styles.infoItem];
@@ -23,103 +22,74 @@ export default function LevellingItem({item, complete, pressHandler}) {
 
   var key = item.id;
 
-  if (Array.isArray(item.text)) {
-    item.text.forEach(function (value, index) {
-      key += index.toString();
-      var o = (<FormattedText taskId={item.id}
-                              style={objectiveStyle}>
-                 {value}
-               </FormattedText>);
-      objectiveLine.push(o);
+    var objectiveLine = item.text.map((value, index) => {
+        return (<FormattedText taskId={item.id}
+                                key={key + index}
+                                style={objectiveStyle}>
+                   {value}
+                </FormattedText>);
     });
-  } else {
-    var wp = "";
 
-    if (item.hasWp) {
-      wp = " /[WP]/";
-    }
-
-    var o = (<FormattedText taskId={item.id}
-                            style={objectiveStyle}>
-               {item.text + wp}
-             </FormattedText>);
-
-    objectiveLine.push(<View key={key} style={styles.objective}>{ o }</View>);
-  }
-
-  var infoLine = [];
-  if (item.minLvl) {
-    infoLine.push(<Text key="{key}MinLvl"
-                        style={rewardStyle}>Min lvl: {item.minLvl}</Text>);
-  }
-  if (item.direction) {
-    var direction = "?";
-
-    switch (item.direction) {
-      case "N":
-        direction = "↑";
-        break;
-
-      case "NE":
-        direction = "↗";
-        break;
-
-      case "E":
-        direction = "→";
-        break;
-
-      case "SE":
-        direction = "↘";
-        break;
-
-      case "S":
-        direction = "↓";
-        break;
-
-      case "SW":
-        direction = "↙";
-        break;
-
-      case "W":
-        direction = "←";
-        break;
-
-      case "NW":
-        direction = "↖";
-        break;
-    }
-    infoLine.push(<Text key="{item.id}Direction"
-                        style={rewardStyle}>Go {direction}</Text>);
-  }
-  if (item.rewards) {
-    var reward = [];
-    if (item.rewards.passive) {
-      reward.push(<Text style={rewardStyle}
-                        key="{item.id}Passive" >+{item.rewards.passive.num}</Text>);
-    }
-    if (item.rewards.item) {
-      reward.push(<Text style={rewardStyle}
-                        key="{item.id}Item">{item.rewards.item}</Text>);
-    }
-    infoLine.push(<Text key="{item.id}Reward"
-                        style={rewardStyle}>Reward: {reward}</Text>);
-  }
-
-  return (
-    <TouchableOpacity onPress={() => pressHandler(item.id)}>
-      <View style={styles.item}>
-    <View>
-        { objectiveLine }
-    </View>
-        <View style={styles.info}>
-          { infoLine }
-        </View>
-      </View>
-    </TouchableOpacity>
-  )
+    return (
+        <TouchableOpacity onPress={() => pressHandler(item.id)}>
+            <View style={styles.container}>
+                <View style={[styles.label, item.hasWp ? styles.waypointLabelActive : styles.waypointLabelInactive]}>
+                    <Text style={styles.labelTextLeft}>Waypoint</Text>
+                </View>
+                <View style={styles.centerBlock}>{ objectiveLine }</View>
+                {item.optional
+                    ? <Text></Text>
+                    : <View style={[styles.label, styles.requiredLabel]}>
+                        <Text style={styles.labelTextRight}>Required</Text>
+                    </View>
+                }
+            </View>
+        </TouchableOpacity>
+    );
 }
 
 const styles = StyleSheet.create({
+    container: {
+        flexDirection: "row",
+        minHeight: 140,
+        paddingTop: 2,
+        paddingBottom: 2,
+        borderBottomWidth: 2,
+        borderColor: "#4d4d4d"
+    },
+    label: {
+        display: "flex",
+        alignItems: "center",
+        width: 30,
+        justifyContent: "center",
+    },
+    labelTextLeft: {
+        fontSize: 20,
+        marginRight: 6,
+        color: "white",
+        transform: [
+            {rotate: "-90deg"}
+        ]
+    },
+    labelTextRight: {
+        fontSize: 20,
+        marginLeft: 6,
+        color: "white",
+        transform: [
+            {rotate: "90deg"}
+        ]
+    },
+    waypointLabelActive: {
+        backgroundColor: "#84a9e1"
+    },
+    waypointLabelInactive: {},
+    centerBlock: {
+        flexGrow: 1
+    },
+    requiredLabel:{
+        backgroundColor: "#aade87"
+    },
+    
   item: {
     padding:10,
     marginTop: 10,
