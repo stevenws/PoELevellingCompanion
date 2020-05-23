@@ -36,19 +36,19 @@ function parseTextFragment(taskId, fragment, defaultStyle, index) {
   }
 
   if (typeof index === "undefined") {
-    index = 0;
+    index = {"i": 0};
   }
 
-  var uniqueKey = taskId + "Text" + index.toString();
-  index++;
+  var uniqueKey = taskId + "Text" + type + index.i;
 
   if (type !== "") {
     splitString.forEach(function (value, idx) {
+      index.i++;
       if (idx % 2 == 0) {
         fragments = fragments.concat(parseTextFragment(taskId,
-                                                            value,
-                                                            defaultStyle,
-                                                            ++index));
+                                                       value,
+                                                       defaultStyle,
+                                                       index));
       } else {
         var newStyle = defaultStyle.concat([globalStyles[type]]);
         uniqueKey += idx.toString();

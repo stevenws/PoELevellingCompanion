@@ -1,5 +1,5 @@
-import React, {useContext} from 'react';
-import { StyleSheet, Text, View, ScrollView } from 'react-native';
+import React, {useState} from 'react';
+import { StyleSheet, Text, ScrollView, View, FlatList} from 'react-native';
 
 import { globalStyles } from "../styles/global.js";
 import LevellingItem from '../shared/levellingItem.js';
@@ -10,37 +10,71 @@ import content from '../data/content.json';
 
 export default function Levelling() {
 
-  const [progress, setProgress] = useContext(Progress);
+  const [progress, setProgress] = useState(
+  {
+    "acts": {
+      1: {},
+      2: {},
+      3: {},
+      4: {},
+      5: {},
+      6: {},
+      7: {},
+      8: {},
+      9: {},
+      10: {}
+    }
+  }
+);
 
-  const toggleState = function(id) {
+  const toggleState = function(act, id) {
     setProgress((prevState) => {
-      prevState[id] = true;
-      return JSON.parse(JSON.stringify(prevState));
+      const newState = Object.assign({}, prevState.acts[act]);
+      if (id in newState) {
+console.log("Deleting");
+        delete newState[id];
+      } else {
+console.log("Adding");
+        newState[id] = true;
+      }
+      prevState.acts[act] = newState
+      return prevState;
     });
   }
 
   var container = [];
-    for (var i = 1; i < 11; i++) {
-        container.push(
-            <View key={i}>
-                <View style={globalStyles.section}>
-                    <Text style={globalStyles.sectionText}>
-                        {content.acts[i].title}
-                    </Text>
-                </View>
+  for (var i = 1; i < 11; i++) {
 
-                {content.acts[i].tasks.map(item => (
-                    <LevellingItem item={ item }
-                                   key={ item.id }
-                                   pressHandler={ toggleState } />
-                ))}
-            </View>
-        );
-    }
+    container.push(
+      <View key={"act" + i}
+            style={globalStyles.section}>
+        <Text style={globalStyles.sectionText}>
+          {content.acts[i].title}
+        </Text>
+      </View>
+    );
+
+    const renderItemFunc = ({ item }) => (
+      <LevellingItem act={i}
+                     item={ item }
+                     pressHandler={ toggleState }
+                     complete={!!(item.id in progress)} />
+      );
+
+    container.push(
+      <FlatList
+        key={"levellingTasksAct" + i}
+        data={content.acts[i].tasks}
+        extraData={progress.acts[i]}
+        keyExtractor={(item) => item.id}
+        renderItem={renderItemFunc}
+      />
+    );
+  }
 
   return (
-    <ScrollView contentContainerStyle={globalStyles.container}>
-        {container}
+    <ScrollView>
+      {container}
     </ScrollView>
   );
 }

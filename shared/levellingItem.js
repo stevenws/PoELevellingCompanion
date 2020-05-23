@@ -1,13 +1,13 @@
-import React, {useContext} from 'react';
+import React, {useState} from 'react';
 import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 
 import { Progress } from "../data/progress.js";
 import FormattedText from "../shared/formattedText.js";
+import {globalStyles} from "../styles/global.js";
 
-export default function LevellingItem({item, complete, pressHandler}) {
+export default function LevellingItem({act, item, complete, pressHandler}) {
 
-  const [progress, setProgress] = useContext(Progress);
-
+  const [progress, setProgress] = useState(Progress);
   var objectiveStyle = [];
   var rewardStyle    = [styles.infoItem];
   if ( item.id in progress) {
